@@ -1,3 +1,11 @@
+function isPaginationMetadata(data: any): data is PaginationMetadata {
+  return data.current_page !== undefined &&
+    data.next_page !== undefined &&
+    data.prev_page !== undefined &&
+    data.total_pages !== undefined &&
+    data.total_count !== undefined;
+}
+
 import {
   CallHandler,
   ExecutionContext,
@@ -5,6 +13,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { map } from 'rxjs/operators';
+import { PaginationMetadata } from "../interfaces";
 
 @Injectable()
 export class SerializerInterceptor implements NestInterceptor {
@@ -15,11 +24,11 @@ export class SerializerInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(map((data: any | any[]) => {
-        if (!Array.isArray(data)) data = [data];
+        let meta: PaginationMetadata;
+        if (Array.isArray(data) && data[1] && isPaginationMetadata(data[1])) [data, meta] = data;
         return {
           status: true,
-          data: data[0],
-          meta: data[1],
+          data, meta,
           code: context.switchToHttp().getResponse().statusCode
         }
       }));
