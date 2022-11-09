@@ -22,15 +22,15 @@ import { SCRIPTS } from "./scripts/index.js";
       imports: [ConfigModule],
       useClass: DatabaseConfigService,
     }),
-    // RedisModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useClass: RedisConfigService,
-    // }),
-    // BullModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useClass: BullConfigService,
-    //   inject: [ConfigService],
-    // }),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: RedisConfigService,
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: BullConfigService,
+      inject: [ConfigService],
+    }),
     TerminusModule
   ],
   controllers: [AppController],

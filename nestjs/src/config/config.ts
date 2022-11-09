@@ -12,11 +12,14 @@ export const configuration = () => {
     "db.name_test": process.env.DB_NAME_TEST,
 
     //redis config
-    // "redis.host": process.env.REDIS_HOST,
-    // "redis.port": process.env.REDIS_PORT,
+    "redis.host": process.env.REDIS_HOST,
+    "redis.port": process.env.REDIS_PORT,
 
     // rabbitmq config
-    // "rabbitmq.host": process.env.RABBITMQ_HOST,
-    // "rabbitmq.port": process.env.RABBITMQ_PORT,
+    "rabbitmq.host": process.env.RABBITMQ_HOST,
+    "rabbitmq.port": process.env.RABBITMQ_PORT,
+
+    // s3 config
+    "aws.bucket": process.env.AWS_BUCKET
   };
 };
