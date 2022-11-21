@@ -14,8 +14,11 @@ export class AppLoggerMiddleware implements NestMiddleware {
       const { statusCode } = response;
       const contentLength = response.get('content-length');
 
+      const queries = Object.entries(request.query);
+      const appendUrl = queries.map(query => query.join("=")).join("&");
+
       this.logger.log(
-        `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
+        `${method} ${url + (queries.length ? "?" + appendUrl : "")} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
       );
     });
 
