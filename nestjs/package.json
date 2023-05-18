@@ -28,12 +28,13 @@
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv/config",
     "ts-node-esm": "ts-node-esm -r dotenv/config -r tsconfig-paths/register",
     "typeorm": "ts-node-esm -r tsconfig-paths/register ./node_modules/.bin/typeorm -d ./src/config/typeorm.config.ts",
-    "execute": "yarn run ts-node-esm src/execute_script",
+    "execute": "node dist/src/execute_script.js",
+    "execute_tsnode": "yarn run ts-node-esm src/execute_script",
     "db:schema:drop": "yarn typeorm schema:drop",
     "db:migrate:generate": "yarn typeorm migration:generate",
     "db:migrate:up": "yarn typeorm migration:run",
     "migrate_and_start": "yarn run ts-node-esm create_db.ts; yarn db:migrate:up; yarn start",
-    "migrate_and_start_prod": "yarn run ts-node-esm create_db.ts; yarn db:migrate:up; yarn build; yarn start:prod",
+    "migrate_and_start_prod": "yarn run ts-node-esm create_db.ts; yarn db:migrate:up; yarn start:prod",
     "db:migrate:down": "yarn typeorm migration:revert"
   },
   "dependencies": {
