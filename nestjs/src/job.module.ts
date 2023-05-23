@@ -12,7 +12,12 @@ import { configuration } from "./config/config.js";
 import { DatabaseConfigService } from "./config/database.config.js";
 import { RedisConfigService } from "./config/redis.config.js";
 import { SCRIPTS } from "./scripts/index.js";
+import { EventMqAppModule } from "./rabbitmq/eventmq-app.module.js";
 import { EventMqProducerModule } from "./rabbitmq/eventmq-producer.module.js";
+const imports = [];
+if (process.env.RABBITMQ_MODE === "true") {
+  imports.push(EventMqAppModule);
+}
 
 @Module({
   imports: [
@@ -34,12 +39,13 @@ import { EventMqProducerModule } from "./rabbitmq/eventmq-producer.module.js";
       inject: [ConfigService],
     }),
     TerminusModule,
-    EventMqProducerModule
+    EventMqProducerModule,
+    ...imports
   ],
   controllers: [AppController],
   providers: [AppService, ...SCRIPTS],
 })
-export class AppModule implements NestModule {
+export class JobModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AppLoggerMiddleware).forRoutes('*');
   }
