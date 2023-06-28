@@ -13,6 +13,7 @@ import { DatabaseConfigService } from "./config/database.config.js";
 import { RedisConfigService } from "./config/redis.config.js";
 import { SCRIPTS } from "./scripts/index.js";
 import { EventMqProducerModule } from "./rabbitmq/eventmq-producer.module.js";
+import { HelperModule } from "./commons/helpers/helpers.module.js";
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { EventMqProducerModule } from "./rabbitmq/eventmq-producer.module.js";
       inject: [ConfigService],
     }),
     TerminusModule,
-    EventMqProducerModule
+    EventMqProducerModule,
+    HelperModule
   ],
   controllers: [AppController],
   providers: [AppService, ...SCRIPTS],
