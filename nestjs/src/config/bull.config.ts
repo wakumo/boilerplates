@@ -8,8 +8,8 @@ export class BullConfigService implements SharedBullConfigurationFactory {
   createSharedConfiguration(): BullModuleOptions {
     return {
       redis: {
-        host: this.configService.get("redisHost"),
-        port: this.configService.get("redisPort"),
+        host: this.configService.get("redis.host"),
+        port: this.configService.get("redis.port"),
         keyPrefix: "boilerplate:"
       },
     }
