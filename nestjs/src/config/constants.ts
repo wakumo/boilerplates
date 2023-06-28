@@ -3,6 +3,7 @@ dotenv.config();
 
 import { ColumnOptions } from "typeorm";
 
+// times
 export const SECONDS = 1;
 export const MILLISECONDS_TO_SECONDS = 1e-3;
 export const SECONDS_TO_MILLISECONDS = 1000;
@@ -19,6 +20,9 @@ export const DAYS_MS = 24 * HOURS_MS;
 export const TOKEN_EXPIRE_TIME = 7 * DAYS;
 
 export const RABBIT_MQ_TIMEOUT_MS = 1 * MINUTES_MS;
+
+// config const
+export const SLACK_MESSAGE_QUEUE_NAME = 'slack_message';
 
 export function DECIMAL(precision: number, scale: number): ColumnOptions {
   return {
