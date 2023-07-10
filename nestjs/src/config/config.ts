@@ -10,6 +10,8 @@ export const configuration = () => {
     "db.password": process.env.DB_PASSWORD,
     "db.name": process.env.DB_NAME,
     "db.name_test": process.env.DB_NAME_TEST,
+    "db.logger_options": process.env.ENV_NAME === 'development' ? true : ['warn', 'error', 'migration'],
+    "db.slow_limit": Number(process.env.DB_SLOW_LIMIT) || 500, // ms
 
     //redis config
     "redis.host": process.env.REDIS_HOST,
