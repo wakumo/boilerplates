@@ -1,4 +1,6 @@
+import 'dotenv/config';
 import pg from 'pg';
+
 const { Client } = pg;
 
 export const dbName = process.env.DB_NAME;
