@@ -1,4 +1,4 @@
-const { client, dbName, dbNameTest } = require("./pg_client.js");
+import { client, dbName, dbNameTest } from './pg_client.js';
 client.connect();
 
 (async function () {
