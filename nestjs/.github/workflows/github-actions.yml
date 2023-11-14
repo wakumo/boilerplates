@@ -55,6 +55,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
+      - run: yarn build
       - run: yarn db:create:test
-      - run: yarn db:migrate:up
       - run: yarn test
