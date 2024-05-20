@@ -6,6 +6,10 @@ function isPaginationMetadata(data: any): data is PaginationMetadata {
     data.total_count !== undefined;
 }
 
+function isDataWithPaginationMetadata(data: any) {
+  return data && data.data && isPaginationMetadata(data.meta);
+}
+
 import {
   CallHandler,
   ExecutionContext,
@@ -23,9 +27,9 @@ export class SerializerInterceptor implements NestInterceptor {
   ): Promise<any> {
     return next
       .handle()
-      .pipe(map((data: any | any[]) => {
+      .pipe(map((data: any) => {
         let meta: PaginationMetadata;
-        if (Array.isArray(data) && data[1] && isPaginationMetadata(data[1])) [data, meta] = data;
+        if (isDataWithPaginationMetadata(data)) { ({ data, meta } = data); }
         return {
           status: true,
           data, meta,

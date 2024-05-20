@@ -1,12 +1,12 @@
 import { ConfigModule } from "@nestjs/config";
 import { BaseEntity, DataSource, DataSourceOptions } from 'typeorm';
-import { configuration } from "../src/config/config.js";
+import { configuration } from "../../src/config/config.js";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { INestApplication, ValidationPipe, VersioningType } from "@nestjs/common";
 import { TestingModule } from "@nestjs/testing";
-import { DatabaseTestConfigService } from "../src/config/database_test.config.js";
+import { DatabaseTestConfigService } from "../../src/config/database-test.config.js";
 
-import * as entitiesIndex from '../src/entities/index.js';
+import * as entitiesIndex from '../../src/entities/index.js';
 const entities = Object.values(entitiesIndex).filter((entity: any) => BaseEntity.isPrototypeOf(entity));
 
 export const IMPORT_MODULES = [

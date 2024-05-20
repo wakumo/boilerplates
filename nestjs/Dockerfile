@@ -11,9 +11,8 @@ WORKDIR $APP_ROOT
 # For npm@5 or later, copy package-lock.json as well
 COPY package.json yarn.lock ./
 
-# Install curl and jq for easier debug
 # RUN apt-get update -y && apt-get upgrade -y
-RUN yarn install
+RUN yarn
 # Bundle server source
 COPY . $APP_ROOT
 

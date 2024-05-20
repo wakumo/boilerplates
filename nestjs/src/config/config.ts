@@ -26,6 +26,9 @@ export const configuration = () => {
     "rabbitmq.exchange.dlx": `${process.env.RABBITMQ_EXCHANGE_NAME}-dlx`,
 
     // s3 config
-    "aws.bucket": process.env.AWS_BUCKET
+    "aws.bucket": process.env.AWS_BUCKET,
+
+    // slack webhook
+    "slack.webhook_url": process.env.SLACK_NOTIFICATION_URL,
   };
 };

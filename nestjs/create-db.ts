@@ -1,4 +1,4 @@
-import { client, dbName, dbNameTest } from './pg_client.js';
+import { client, dbName, dbNameTest } from './pg-client.js';
 client.connect();
 
 (async function () {

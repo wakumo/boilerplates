@@ -1,2 +1,2 @@
-export * from "./pagination_query.interface.js";
-export * from "./pagination_metadata.interface.js";
+export * from "./pagination-query.interface.js";
+export * from "./pagination-metadata.interface.js";

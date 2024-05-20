@@ -1,9 +1,19 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
-import { PaginationMetadata } from "../interfaces/pagination_metadata.interface";
+import { PaginationMetadata } from "../interfaces/pagination-metadata.interface";
+import { IncomingWebhook } from '@slack/webhook';
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class HelperService {
+  private readonly slackWebhook: IncomingWebhook;
+
+  constructor(
+    private readonly config: ConfigService
+  ) {
+    this.slackWebhook = new IncomingWebhook(this.config.get("slack.webhook_url"));
+  }
+
   generatePaginationMetadata(page: number, per: number, totalCount: number): PaginationMetadata {
     const totalPages = Math.ceil(totalCount / per);
     return {
@@ -74,5 +84,22 @@ export class HelperService {
     return Array(Math.ceil(array.length / size)).fill(null)
       .map((_, index) => index * size)
       .map(begin => array.slice(begin, begin + size));
+  }
+
+  async notifySlackMessage(msg: string) {
+    try {
+      await this.slackWebhook.send({
+        username: `nestjs-boilerplate`,
+        attachments: [
+          {
+            color: 'good',
+            text: msg,
+            mrkdwn_in: ["text"]
+          }
+        ]
+      })
+    } catch (ex) {
+      console.log(ex);
+    }
   }
 }

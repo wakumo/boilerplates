@@ -6,7 +6,7 @@ import { TerminusModule } from "@nestjs/terminus";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { AppLoggerMiddleware } from "./commons/middlewares/app_logger.middleware.js";
+import { AppLoggerMiddleware } from "./commons/middlewares/app-logger.middleware.js";
 import { BullConfigService } from "./config/bull.config.js";
 import { configuration } from "./config/config.js";
 import { DatabaseConfigService } from "./config/database.config.js";
