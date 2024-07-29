@@ -1,24 +1,26 @@
-FROM node:16.16.0
+FROM node:18.14.2 AS build
 
-ENV APP_ROOT /app
+WORKDIR /usr/src/app
 
-# Create server directory
-WORKDIR $APP_ROOT
-
-
-# Install server dependencies
-# COPY package.json .
-# For npm@5 or later, copy package-lock.json as well
-COPY package.json yarn.lock ./
-
-# Install curl and jq for easier debug
-# RUN apt-get update -y && apt-get upgrade -y
+COPY --chown=node:node package*.json yarn.lock ./
 RUN yarn install
-# Bundle server source
-COPY . $APP_ROOT
+
+COPY --chown=node:node . .
+RUN yarn build
+
+FROM node:18.14.2 AS production
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/package*.json ./
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node tsconfig.json ./
+COPY --chown=node:node entrypoint.sh ./entrypoint.sh
+
+USER node
 
 EXPOSE 3000 3001
 
-RUN yarn build
-
-CMD [ "yarn", "run", "migrate_and_start_prod"]
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "dist/src/main.js"]
