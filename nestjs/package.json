@@ -35,6 +35,7 @@
     "db:schema:drop": "yarn typeorm schema:drop",
     "db:migrate:generate": "yarn typeorm migration:generate",
     "db:migrate:up": "yarn typeorm migration:run",
+    "db:migrate:up:prod": "yarn typeorm -d dist/src/config/typeorm.config.js migration:run",
     "migrate_and_start": "yarn run ts-node-esm create_db.ts; yarn db:migrate:up; yarn start",
     "migrate_and_start_prod": "node dist/create-db.js; yarn db:migrate:up; yarn start:prod",
     "db:migrate:down": "yarn typeorm migration:revert"
