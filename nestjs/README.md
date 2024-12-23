@@ -18,7 +18,7 @@ yarn install
 3. Create database
 
 ```
-yarn ts-node-esm create_db.ts
+yarn ts-node-esm create-db.ts
 ```
 
 4. Run migration
@@ -36,6 +36,6 @@ yarn migrate_and_start
 More cmds:
 ```
 yarn db:migrate:generate ./src/migrations/AddNewColumnToTables
-yarn ts-node-esm drop_db.ts
+yarn ts-node-esm drop-db.ts
 yarn test
 ```
