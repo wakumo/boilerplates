@@ -57,6 +57,8 @@
     "@nestjs/terminus": "^9.1.2",
     "@nestjs/typeorm": "^9.0.1",
     "@types/aws-sdk": "^2.7.0",
+    "@uniswap/sdk-core": "^7.5.0",
+    "@uniswap/v2-sdk": "^4.13.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "amqplib": "^0.10.3",
     "axios": "^1.1.3",
