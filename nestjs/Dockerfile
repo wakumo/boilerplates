@@ -3,20 +3,22 @@ FROM node:18.14.2 AS build
 WORKDIR /usr/src/app
 
 COPY --chown=node:node package*.json yarn.lock ./
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 COPY --chown=node:node . .
 RUN yarn build
 
-FROM node:18.14.2 AS production
+FROM node:18-alpine AS production
 
 WORKDIR /usr/src/app
 
-COPY --from=build /usr/src/app/package*.json ./
-COPY --from=build /usr/src/app/node_modules ./node_modules
+RUN apk add --no-cache git
+
+COPY package.json yarn.lock ./
 COPY --from=build /usr/src/app/dist ./dist
-COPY --chown=node:node tsconfig.json ./
 COPY --chown=node:node entrypoint.sh ./entrypoint.sh
+
+RUN yarn install --frozen-lockfile --production && yarn cache clean
 
 USER node
 
