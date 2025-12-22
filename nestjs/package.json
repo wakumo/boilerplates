@@ -8,7 +8,7 @@
   "type": "module",
   "engines": {
     "npm": "please-use-yarn",
-    "node": ">=16.16.0",
+    "node": ">=22",
     "yarn": ">= 1.19.1"
   },
   "scripts": {
@@ -28,7 +28,7 @@
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv/config",
     "ts-node-esm": "ts-node-esm -r dotenv/config -r tsconfig-paths/register",
     "typeorm": "ts-node-esm -r tsconfig-paths/register ./node_modules/.bin/typeorm",
-    "execute-tsnode": "yarn run ts-node-esm src/execute-script",
+    "execute-tsnode": "npx tsx src/execute-script.ts",
     "execute": "node dist/src/execute-script.js",
     "db:create": "node dist/create-db.js",
     "db:create:test": "NODE_ENV=test node dist/create-db.js",
@@ -56,6 +56,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/terminus": "^9.1.2",
     "@nestjs/typeorm": "^9.0.1",
+    "@slack/webhook": "^6.1.0",
     "@types/aws-sdk": "^2.7.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "amqplib": "^0.10.3",
@@ -73,8 +74,7 @@
     "rxjs": "^7.2.0",
     "ts-jest-resolver": "^2.0.0",
     "typeorm": "^0.3.10",
-    "web3": "4.0.1-alpha.0",
-    "@slack/webhook": "^6.1.0"
+    "web3": "4.0.1-alpha.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0-0",
