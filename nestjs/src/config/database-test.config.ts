@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { BaseEntity } from 'typeorm';
 
 import * as entitiesIndex from '../../src/entities/index.js';
-import { BaseEntity } from "typeorm";
-const entities = Object.values(entitiesIndex).filter((entity: any) => BaseEntity.isPrototypeOf(entity));
+const entities = Object.values(entitiesIndex).filter(
+  (entity: unknown): entity is typeof BaseEntity =>
+    typeof entity === 'function' && entity.prototype instanceof BaseEntity,
+);
 
 @Injectable()
 export class DatabaseTestConfigService implements TypeOrmOptionsFactory {
@@ -20,7 +23,6 @@ export class DatabaseTestConfigService implements TypeOrmOptionsFactory {
       password: this.configService.get('db.password'),
       entities: entities,
       synchronize: true,
-      keepConnectionAlive: true
     };
   }
 }

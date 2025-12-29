@@ -1,0 +1,3 @@
+# This directory contains TypeORM migration files
+# Migrations are generated with: yarn db:migrate:generate src/migrations/MigrationName
+

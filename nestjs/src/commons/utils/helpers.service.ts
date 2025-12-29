@@ -1,20 +1,24 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
-import { PaginationMetadata } from "../interfaces/pagination-metadata.interface";
+import { ConfigService } from '@nestjs/config';
 import { IncomingWebhook } from '@slack/webhook';
-import { ConfigService } from "@nestjs/config";
+
+import { PaginationMetadata } from '../interfaces/pagination-metadata.interface.js';
 
 @Injectable()
 export class HelperService {
   private readonly slackWebhook: IncomingWebhook;
 
-  constructor(
-    private readonly config: ConfigService
-  ) {
-    this.slackWebhook = new IncomingWebhook(this.config.get("slack.webhook_url"));
+  constructor(private readonly config: ConfigService) {
+    this.slackWebhook = new IncomingWebhook(
+      this.config.get('slack.webhook_url')!,
+    );
   }
 
-  generatePaginationMetadata(page: number, per: number, totalCount: number): PaginationMetadata {
+  generatePaginationMetadata(
+    page: number,
+    per: number,
+    totalCount: number,
+  ): PaginationMetadata {
     const totalPages = Math.ceil(totalCount / per);
     return {
       current_page: page,
@@ -26,30 +30,39 @@ export class HelperService {
   }
 
   sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  delay(fn: Function, ms: number): Promise<any> {
-    return new Promise((resolve) => setTimeout(_ => resolve(fn()), ms));
+  delay<T>(fn: () => T, ms: number): Promise<T> {
+    return new Promise((resolve) => setTimeout(() => resolve(fn()), ms));
   }
 
-  async retry(fn: Function, maxAttempts = 3, delayInSeconds = 1): Promise<any> {
-    const execute = async (attempt: number) => {
+  retry<T>(
+    fn: () => Promise<T>,
+    maxAttempts = 3,
+    delayInSeconds = 1,
+  ): Promise<T> {
+    const execute = async (attempt: number): Promise<T> => {
       try {
-        return await fn()
+        return await fn();
       } catch (err) {
         if (attempt <= maxAttempts) {
-          const nextAttempt = attempt + 1
-          console.error(`Retrying after ${delayInSeconds} seconds due to:`, err)
-          return this.delay(() => execute(nextAttempt), delayInSeconds * 1000)
+          const nextAttempt = attempt + 1;
+          console.error(
+            `Retrying after ${delayInSeconds} seconds due to:`,
+            err,
+          );
+          return await this.delay(
+            () => execute(nextAttempt),
+            delayInSeconds * 1000,
+          );
         } else {
-          throw err
+          throw err;
         }
       }
-    }
+    };
     return execute(1);
   }
-
 
   // Spilit an array to multi chunk arrays
   //
@@ -66,8 +79,8 @@ export class HelperService {
   //     [800, 900],
   //     [900, 980]
   // ]
-  chunkArray(from: number, to: number, chunkSize: number) {
-    let results = [];
+  chunkArray(from: number, to: number, chunkSize: number): number[][] {
+    const results: number[][] = [];
     let current = from;
     while (current <= to) {
       if (current > to) break;
@@ -80,10 +93,11 @@ export class HelperService {
   // split a big array into smaller arrays of fixed size
   // e.g splitArray([1,2,3,4,5,6,7,8,9,10], 3)
   // => [[1,2,3], [4,5,6], [7,8,9], [10]]
-  splitArray(array: any[], size: number) {
-    return Array(Math.ceil(array.length / size)).fill(null)
+  splitArray<T>(array: T[], size: number): T[][] {
+    return Array(Math.ceil(array.length / size))
+      .fill(null)
       .map((_, index) => index * size)
-      .map(begin => array.slice(begin, begin + size));
+      .map((begin) => array.slice(begin, begin + size));
   }
 
   async notifySlackMessage(msg: string) {
@@ -94,10 +108,10 @@ export class HelperService {
           {
             color: 'good',
             text: msg,
-            mrkdwn_in: ["text"]
-          }
-        ]
-      })
+            mrkdwn_in: ['text'],
+          },
+        ],
+      });
     } catch (ex) {
       console.log(ex);
     }

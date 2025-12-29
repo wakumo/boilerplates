@@ -1,3 +1,3 @@
-import { SampleJob } from "./jobs/sample.job.js";
+import { SampleJob } from './jobs/sample.job.js';
 
-export const SCRIPTS = [SampleJob]
+export const SCRIPTS = [SampleJob];

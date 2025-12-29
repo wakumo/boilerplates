@@ -1,6 +1,6 @@
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { Channel, ConsumeMessage } from 'amqplib';
+import { Injectable } from '@nestjs/common';
+import type { Channel, ConsumeMessage } from 'amqplib';
 
 const ENV_NAME = process.env.ENV_NAME || '';
 
@@ -14,8 +14,7 @@ function errorHandler(channel: Channel, msg: ConsumeMessage, error: Error) {
 
 @Injectable()
 export class EventMqConsumer {
-  constructor(
-  ) { }
+  constructor() {}
 
   @RabbitSubscribe({
     exchange: process.env.RABBITMQ_EXCHANGE_NAME,
@@ -25,16 +24,14 @@ export class EventMqConsumer {
       durable: true,
       arguments: {
         'x-dead-letter-exchange': `${process.env.RABBITMQ_EXCHANGE_NAME}-dlx`,
-        'x-dead-letter-routing-key': '<project_name>.deadletter.events.<service_name>.*',
-      }
+        'x-dead-letter-routing-key':
+          '<project_name>.deadletter.events.<service_name>.*',
+      },
     },
     errorHandler: errorHandler,
   })
-  public async handleSocialEvent(
-    msg: {},
-    _: ConsumeMessage,
-  ) {
-    console.log("SAMPLE CONSUMER");
+  public handleSocialEvent(_msg: unknown, _: ConsumeMessage) {
+    console.log('SAMPLE CONSUMER');
     return;
   }
 }

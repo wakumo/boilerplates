@@ -1,14 +1,20 @@
-import { ClassSerializerInterceptor, Controller, Get, UseInterceptors } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  UseInterceptors,
+} from '@nestjs/common';
+
+import { SerializerInterceptor } from '../../commons/interceptors/serializer.interceptor.js';
 import { SampleService } from './sample.service.js';
-import { SerializerInterceptor } from "../../commons/interceptors/serializer.interceptor.js";
 
 @UseInterceptors(SerializerInterceptor, ClassSerializerInterceptor)
 @Controller({ path: 'sample', version: 'v1' })
 export class SampleController {
-  constructor(private readonly sampleService: SampleService) { }
+  constructor(private readonly sampleService: SampleService) {}
 
   @Get()
   getHello() {
-    return { message: "hello" };
+    return { message: 'hello' };
   }
 }

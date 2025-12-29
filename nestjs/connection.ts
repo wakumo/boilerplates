@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { DataSource } from 'typeorm';
 import path from 'path';
+import { DataSource } from 'typeorm';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);

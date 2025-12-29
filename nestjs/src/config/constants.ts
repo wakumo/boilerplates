@@ -1,7 +1,7 @@
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { ColumnOptions } from "typeorm";
+import { ColumnOptions } from 'typeorm';
 
 // times
 export const SECONDS = 1;
@@ -26,8 +26,9 @@ export const SLACK_MESSAGE_QUEUE_NAME = 'slack_message';
 
 export function DECIMAL(precision: number, scale: number): ColumnOptions {
   return {
-    precision, scale,
+    precision,
+    scale,
     type: 'decimal',
-    default: 0.0
-  }
-};
+    default: 0.0,
+  };
+}
