@@ -11,7 +11,7 @@ export class SampleJob extends CommandRunner {
   }
 
   async run(passedParam: string[], options?: UserJobOptions): Promise<void> {
-    console.log(`Hello, ${options.name}, this is ${process.env.USER_NAME}`)
+    console.log(`Hello, ${options?.name || 'World'}, this is ${process.env.USER_NAME || 'Unknown'}`)
   }
 
   @Option({

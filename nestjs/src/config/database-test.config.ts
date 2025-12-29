@@ -20,7 +20,6 @@ export class DatabaseTestConfigService implements TypeOrmOptionsFactory {
       password: this.configService.get('db.password'),
       entities: entities,
       synchronize: true,
-      keepConnectionAlive: true
     };
   }
 }

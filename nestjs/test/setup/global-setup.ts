@@ -1,10 +1,10 @@
-require("dotenv").config();
+import "dotenv/config";
 
-import * as matchers from 'jest-extended';
+import matchers from 'jest-extended';
 expect.extend(matchers);
 
-import "@/test/mocks/mock-rabbitmq-spec.event-message";
-import '@/test/mocks/mock-eventmq.module';
+import "../mocks/mock-rabbitmq-spec.event-message.js";
+import "../mocks/mock-eventmq.module.js";
 
 if (process.env.SILENT_TEST === "1") {
   console.log("SILENT");

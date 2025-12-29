@@ -1,13 +1,13 @@
 import { AmqpConnection, RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { EventMqProducer } from '../../src/rabbitmq/services/eventmq-producer.service';
-import { RabbitMqConfigService } from '../../src/config/rabbitmq.config';
+import { EventMqProducer } from '../../src/rabbitmq/services/eventmq-producer.service.js';
+import { RabbitMqConfigService } from '../../src/config/rabbitmq.config.js';
 
 @Global()
 @Module({
   imports: [
-    RabbitMQModule.forRootAsync(RabbitMQModule, {
+    RabbitMQModule.forRootAsync({
       imports: [ConfigModule],
       useClass: RabbitMqConfigService
     })

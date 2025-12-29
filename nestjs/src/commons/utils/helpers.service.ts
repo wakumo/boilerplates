@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
-import { PaginationMetadata } from "../interfaces/pagination-metadata.interface";
+import { PaginationMetadata } from "../interfaces/pagination-metadata.interface.js";
 import { IncomingWebhook } from '@slack/webhook';
 import { ConfigService } from "@nestjs/config";
 
@@ -11,7 +11,7 @@ export class HelperService {
   constructor(
     private readonly config: ConfigService
   ) {
-    this.slackWebhook = new IncomingWebhook(this.config.get("slack.webhook_url"));
+    this.slackWebhook = new IncomingWebhook(this.config.get("slack.webhook_url")!);
   }
 
   generatePaginationMetadata(page: number, per: number, totalCount: number): PaginationMetadata {
@@ -66,8 +66,8 @@ export class HelperService {
   //     [800, 900],
   //     [900, 980]
   // ]
-  chunkArray(from: number, to: number, chunkSize: number) {
-    let results = [];
+  chunkArray(from: number, to: number, chunkSize: number): number[][] {
+    let results: number[][] = [];
     let current = from;
     while (current <= to) {
       if (current > to) break;

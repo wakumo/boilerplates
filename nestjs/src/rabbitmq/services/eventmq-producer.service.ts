@@ -12,12 +12,12 @@ export class EventMqProducer {
   ) { }
 
   publish(exchange: string, routingKey: string, payload: any, opts?: Options.Publish): void {
-    if (!exchange) exchange = this.config.get("rabbitmq.exchange.name");
+    if (!exchange) exchange = this.config.get("rabbitmq.exchange.name")!;
     this.rabbitmq.publish(exchange, routingKey, payload, opts);
   }
 
   request<T>(exchange: string, routingKey: string, payload: any, headers?: any): Promise<T> {
-    if (!exchange) exchange = this.config.get("rabbitmq.exchange.name");
+    if (!exchange) exchange = this.config.get("rabbitmq.exchange.name")!;
     return this.rabbitmq.request<T>({ exchange, routingKey, payload, headers, timeout: RABBIT_MQ_TIMEOUT_MS })
   }
 }

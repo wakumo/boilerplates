@@ -1,6 +1,6 @@
 import { RedisModule } from "@liaoliaots/nestjs-redis";
 import { BullModule } from "@nestjs/bull";
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { DynamicModule, MiddlewareConsumer, Module, NestModule, Type } from '@nestjs/common';
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TerminusModule } from "@nestjs/terminus";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -14,7 +14,7 @@ import { RedisConfigService } from "./config/redis.config.js";
 import { SCRIPTS } from "./scripts/index.js";
 import { EventMqAppModule } from "./rabbitmq/eventmq-app.module.js";
 import { EventMqProducerModule } from "./rabbitmq/eventmq-producer.module.js";
-const imports = [];
+const imports: Array<Type<any> | DynamicModule | Promise<DynamicModule>> = [];
 if (process.env.RABBITMQ_MODE === "true") {
   imports.push(EventMqAppModule);
 }
@@ -28,10 +28,12 @@ if (process.env.RABBITMQ_MODE === "true") {
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: DatabaseConfigService,
+      inject: [ConfigService],
     }),
     RedisModule.forRootAsync({
       imports: [ConfigModule],
       useClass: RedisConfigService,
+      inject: [ConfigService],
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],

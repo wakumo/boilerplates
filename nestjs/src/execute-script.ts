@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { CommandFactory } from 'nest-commander';
 import { JobModule } from "./job.module.js";
 

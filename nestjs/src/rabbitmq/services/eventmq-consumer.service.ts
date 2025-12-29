@@ -1,6 +1,6 @@
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { Channel, ConsumeMessage } from 'amqplib';
+import type { Channel, ConsumeMessage } from 'amqplib';
 
 const ENV_NAME = process.env.ENV_NAME || '';
 

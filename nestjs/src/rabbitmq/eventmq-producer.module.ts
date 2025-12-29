@@ -8,7 +8,7 @@ import { EventMqProducer } from "./services/eventmq-producer.service.js";
 @Module({
   controllers: [],
   imports: [
-    RabbitMQModule.forRootAsync(RabbitMQModule, {
+    RabbitMQModule.forRootAsync({
       imports: [ConfigModule],
       useClass: RabbitMqConfigService,
     }),

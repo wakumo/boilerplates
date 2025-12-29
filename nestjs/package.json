@@ -8,8 +8,8 @@
   "type": "module",
   "engines": {
     "npm": "please-use-yarn",
-    "node": ">=16.16.0",
-    "yarn": ">= 1.19.1"
+    "node": ">=22.0.0",
+    "yarn": ">=1.19"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -20,75 +20,75 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
+    "test:cov": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv/config",
-    "ts-node-esm": "ts-node-esm -r dotenv/config -r tsconfig-paths/register",
-    "typeorm": "ts-node-esm -r tsconfig-paths/register ./node_modules/.bin/typeorm",
-    "execute-tsnode": "yarn run ts-node-esm src/execute-script",
+    "ts-node-esm": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));'",
+    "typeorm": "yarn ts-node-esm ./node_modules/.bin/typeorm -d ./src/config/typeorm.config.ts",
+    "typeorm:cli": "yarn ts-node-esm ./node_modules/.bin/typeorm",
+    "typeorm:prod": "node ./node_modules/.bin/typeorm -d ./dist/src/config/typeorm.config.js",
     "execute": "node dist/src/execute-script.js",
-    "db:create": "node dist/create-db.js",
-    "db:create:test": "NODE_ENV=test node dist/create-db.js",
+    "execute:dev": "yarn ts-node-esm src/execute-script.ts",
+    "db:create": "npx tsx create-db.ts",
+    "db:create:test": "NODE_ENV=test npx tsx create-db.ts",
+    "db:drop": "npx tsx drop-db.ts",
+    "db:drop:prod": "node dist/drop-db.js",
     "db:schema:drop": "yarn typeorm schema:drop",
-    "db:migrate:generate": "yarn typeorm -d ./src/config/typeorm.config.ts migration:generate",
-    "db:migrate:up": "yarn typeorm -d ./src/config/typeorm.config.ts migration:run",
-    "db:migrate:down": "yarn typeorm -d ./src/config/typeorm.config.ts migration:revert",
-    "db:migrate:up:prod": "node ./node_modules/typeorm/cli.js -d dist/src/config/typeorm.config.js migration:run",
-    "migrate_and_start": "yarn run ts-node-esm create_db.ts; yarn db:migrate:up; yarn start",
-    "migrate_and_start_prod": "node dist/create-db.js; yarn db:migrate:up; yarn start:prod"
+    "db:migrate:create": "yarn typeorm:cli migration:create",
+    "db:migrate:generate": "yarn typeorm migration:generate",
+    "db:migrate:up": "yarn typeorm migration:run",
+    "db:migrate:up:prod": "yarn typeorm:prod migration:run",
+    "db:migrate:down": "yarn typeorm migration:revert",
+    "db:migrate:down:prod": "yarn typeorm:prod migration:revert",
+    "migrate_and_start": "yarn db:create; yarn db:migrate:up; yarn start",
+    "migrate_and_start_prod": "node dist/create-db.js; yarn db:migrate:up:prod; yarn start:prod"
   },
   "dependencies": {
-    "@golevelup/nestjs-rabbitmq": "^3.4.0",
-    "@liaoliaots/nestjs-redis": "^9.0.3",
-    "@moralisweb3/core": "^2.6.5",
-    "@moralisweb3/evm": "^2.0.0-alpha.2",
-    "@moralisweb3/evm-api": "^2.6.5",
-    "@moralisweb3/evm-wallet-connect-connector": "^2.0.0-alpha.2",
-    "@nestjs/bull": "^0.6.1",
-    "@nestjs/common": "^9.0.0",
-    "@nestjs/config": "^2.2.0",
-    "@nestjs/core": "^9.0.0",
-    "@nestjs/jwt": "^9.0.0",
-    "@nestjs/mapped-types": "*",
-    "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/terminus": "^9.1.2",
-    "@nestjs/typeorm": "^9.0.1",
-    "@types/aws-sdk": "^2.7.0",
+    "@golevelup/nestjs-rabbitmq": "^5.0.0",
+    "@liaoliaots/nestjs-redis": "^10.0.0",
+    "@nestjs/bull": "^11.0.4",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/mapped-types": "^2.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/terminus": "^11.0.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "@slack/webhook": "^6.1.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "amqplib": "^0.10.3",
     "axios": "^1.1.3",
-    "bull": "4.0.0",
+    "bull": "^4.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "file-type": "^18.0.0",
     "ioredis": "^5.2.3",
-    "moralis": "^2.6.5",
-    "nest-commander": "^3.1.0",
+    "nest-commander": "3.10.0",
     "pg": "^8.8.0",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.2.2",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "ts-jest-resolver": "^2.0.0",
     "typeorm": "^0.3.10",
-    "web3": "4.0.1-alpha.0",
-    "@slack/webhook": "^6.1.0"
+    "web3": "4.0.1-alpha.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0-0",
     "@nestjs/cli": "^9.0.0",
-    "@nestjs/schematics": "^9.0.0",
-    "@nestjs/testing": "^9.0.0",
+    "@nestjs/schematics": "^11.0.9",
+    "@nestjs/testing": "^11.0.0",
     "@types/amqplib": "^0.10.0",
     "@types/bull": "^3.15.9",
     "@types/express": "^4.17.13",
     "@types/inquirer": "^8.1.3",
-    "@types/jest": "28.1.8",
+    "@types/jest": "^29.0.0",
     "@types/jest-when": "^3.5.2",
     "@types/multer": "^1.4.7",
-    "@types/node": "^16.0.0",
+    "@types/node": "^22.0.0",
     "@types/pg": "^8.6.5",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -97,21 +97,23 @@
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "jest": "28.1.3",
+    "jest": "^29.0.0",
+    "jest-extended": "^4.0.2",
     "jest-when": "^3.5.2",
     "multer": "^1.4.5-lts.1",
     "nock": "^13.2.9",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
-    "supertest": "^6.1.3",
-    "ts-jest": "28.0.8",
+    "supertest": "^7.1.3",
+    "ts-jest": "^29.0.0",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "4.1.0",
-    "typescript": "^4.7.4",
+    "typescript": "^5.9.3",
     "webpack": "^5.74.0"
   },
   "jest": {
+    "injectGlobals": true,
     "moduleFileExtensions": [
       "js",
       "json",
@@ -120,16 +122,36 @@
     "resolver": "ts-jest-resolver",
     "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.ts$": [
+        "ts-jest",
+        {
+          "useESM": true,
+          "diagnostics": {
+            "ignoreCodes": [
+              151002
+            ]
+          }
+        }
+      ]
     },
+    "setupFiles": [
+      "<rootDir>/test/setup/test-setup.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setup/global-setup.ts"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
     "moduleNameMapper": {
-      "^@/src/(.*)$": "<rootDir>/$1",
-      "^src/(.*)$": "<rootDir>/$1",
-      "^@/test/(.*)$": "<rootDir>/../test/$1"
+      "^(\\.{1,2}/.*)\\.js$": "$1",
+      "^@/src/(.*)$": "<rootDir>/src/$1",
+      "^src/(.*)$": "<rootDir>/src/$1",
+      "^@/test/(.*)$": "<rootDir>/test/$1"
     },
     "coverageDirectory": "../coverage",
     "forceExit": true,

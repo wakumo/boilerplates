@@ -17,7 +17,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { map } from 'rxjs/operators';
-import { PaginationMetadata } from "../interfaces";
+import { PaginationMetadata } from "../interfaces/index.js";
 
 @Injectable()
 export class SerializerInterceptor implements NestInterceptor {
@@ -28,7 +28,7 @@ export class SerializerInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(map((data: any) => {
-        let meta: PaginationMetadata;
+        let meta: PaginationMetadata | undefined;
         if (isDataWithPaginationMetadata(data)) { ({ data, meta } = data); }
         return {
           status: true,
