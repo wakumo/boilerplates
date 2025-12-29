@@ -1,4 +1,4 @@
 export interface PaginationQuery {
-  page: number,
-  per: number,
+  page: number;
+  per: number;
 }

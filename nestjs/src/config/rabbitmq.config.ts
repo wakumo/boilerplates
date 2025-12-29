@@ -1,32 +1,35 @@
-import { MessageHandlerErrorBehavior, RabbitMQConfig } from "@golevelup/nestjs-rabbitmq";
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import {
+  MessageHandlerErrorBehavior,
+  RabbitMQConfig,
+} from '@golevelup/nestjs-rabbitmq';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RabbitMqConfigService {
-  constructor(private readonly configService: ConfigService) { }
+  constructor(private readonly configService: ConfigService) {}
 
   create(): RabbitMQConfig {
-    const host = this.configService.get("rabbitmq.host")!;
-    const port = this.configService.get("rabbitmq.port")!;
-    const user = this.configService.get("rabbitmq.user")!;
-    const pass = this.configService.get("rabbitmq.pass")!;
+    const host = this.configService.get<string>('rabbitmq.host')!;
+    const port = this.configService.get<string>('rabbitmq.port')!;
+    const user = this.configService.get<string>('rabbitmq.user')!;
+    const pass = this.configService.get<string>('rabbitmq.pass')!;
     return {
       exchanges: [
         {
-          name: this.configService.get("rabbitmq.exchange.name")!,
+          name: this.configService.get('rabbitmq.exchange.name')!,
           type: 'topic',
           options: {
             durable: true,
-          }
+          },
         },
         {
-          name: this.configService.get("rabbitmq.exchange.dlx")!,
+          name: this.configService.get('rabbitmq.exchange.dlx')!,
           type: 'topic',
           options: {
             durable: true,
-          }
-        }
+          },
+        },
       ],
       // prefetchCount: 15,
       defaultSubscribeErrorBehavior: MessageHandlerErrorBehavior.NACK,
@@ -34,14 +37,14 @@ export class RabbitMqConfigService {
       uri: `amqp://${user}:${pass}@${host}:${port}`,
       connectionInitOptions: { wait: false },
       channels: {
-        "default-channel": {
+        'default-channel': {
           prefetchCount: 20,
-          default: true
+          default: true,
         },
-        "channel-2": {
-          prefetchCount: 1
-        }
-      }
-    }
+        'channel-2': {
+          prefetchCount: 1,
+        },
+      },
+    };
   }
 }

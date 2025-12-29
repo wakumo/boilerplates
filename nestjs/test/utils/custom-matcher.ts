@@ -1,29 +1,45 @@
-function isSubset(subset: any, superset: any) {
+function isSubset(
+  subset: Record<string, unknown>,
+  superset: Record<string, unknown>,
+) {
   try {
     expect(superset).toMatchObject(subset);
     return true;
-  }
-  catch (ex) {
+  } catch {
     return false;
   }
 }
 
 export const CustomMatchers = {
-  toContainMatchingObject(received: any[], expected: any) {
-    const pass = received.some(item => isSubset(expected, item));
+  toContainMatchingObject(
+    received: unknown[],
+    expected: Record<string, unknown>,
+  ) {
+    const pass = received.some((item) => {
+      if (typeof item === 'object' && item !== null) {
+        return isSubset(expected, item as Record<string, unknown>);
+      }
+      return false;
+    });
 
     if (pass) {
       return {
         message: () =>
-          `expected ${received} not to contain a partial object matching ${expected}`,
+          `expected ${JSON.stringify(
+            received,
+          )} not to contain a partial object matching ${JSON.stringify(
+            expected,
+          )}`,
         pass: true,
       };
     } else {
       return {
         message: () =>
-          `expected ${received} to contain a partial object matching ${expected}`,
+          `expected ${JSON.stringify(
+            received,
+          )} to contain a partial object matching ${JSON.stringify(expected)}`,
         pass: false,
       };
     }
-  }
-}
+  },
+};

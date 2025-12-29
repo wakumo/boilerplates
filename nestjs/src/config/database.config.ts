@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import path from 'path';
-import { LoggerOptions } from "typeorm";
+import { LoggerOptions } from 'typeorm';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,8 +21,8 @@ export class DatabaseConfigService implements TypeOrmOptionsFactory {
       database: this.configService.get('db.name'),
       password: this.configService.get('db.password'),
       entities: [path.join(__dirname, '../**/*.entity{.ts,.js}')],
-      logging: this.configService.get<LoggerOptions>("db.logger_options"),
-      maxQueryExecutionTime: this.configService.get("db.slow_limit"),
+      logging: this.configService.get<LoggerOptions>('db.logger_options'),
+      maxQueryExecutionTime: this.configService.get('db.slow_limit'),
     };
   }
 }

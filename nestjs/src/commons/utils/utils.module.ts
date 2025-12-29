@@ -1,5 +1,6 @@
-import { Global, Module } from "@nestjs/common";
-import { HelperService } from "./helpers.service.js";
+import { Global, Module } from '@nestjs/common';
+
+import { HelperService } from './helpers.service.js';
 
 // This module is used to export a global collection of utility methods
 // Please create a new service and add it to providers and exports
@@ -7,6 +8,6 @@ import { HelperService } from "./helpers.service.js";
 @Global()
 @Module({
   providers: [HelperService],
-  exports: [HelperService]
+  exports: [HelperService],
 })
-export class UtilsModule { }
+export class UtilsModule {}

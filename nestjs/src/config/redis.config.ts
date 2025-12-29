@@ -1,4 +1,7 @@
-import { RedisModuleOptions, RedisOptionsFactory } from '@liaoliaots/nestjs-redis';
+import {
+  RedisModuleOptions,
+  RedisOptionsFactory,
+} from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
