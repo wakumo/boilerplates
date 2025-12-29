@@ -8,4 +8,10 @@ const bootstrap = async () => {
   await CommandFactory.run(JobModule, ['warn', 'error', 'verbose']);
 };
 
-bootstrap();
+bootstrap()
+  .then(() => {
+    console.log('Script executed successfully');
+  })
+  .catch((error) => {
+    console.error(error);
+  });

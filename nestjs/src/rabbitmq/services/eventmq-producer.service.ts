@@ -12,14 +12,14 @@ export class EventMqProducer {
     private readonly config: ConfigService,
   ) {}
 
-  publish(
+  async publish(
     exchange: string,
     routingKey: string,
     payload: any,
     opts?: Options.Publish,
-  ): void {
+  ): Promise<void> {
     if (!exchange) exchange = this.config.get('rabbitmq.exchange.name')!;
-    this.rabbitmq.publish(exchange, routingKey, payload, opts);
+    await this.rabbitmq.publish(exchange, routingKey, payload, opts);
   }
 
   request<T>(
