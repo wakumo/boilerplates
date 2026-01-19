@@ -12,11 +12,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.16.0]
+        node-version: [22.21.1]
 
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:13.14
         env:
           POSTGRES_USER: runner
           POSTGRES_DB: postgres

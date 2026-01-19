@@ -1,16 +1,17 @@
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { CacheManagerModule } from './commons/cache-manager/cache-manager.module.js';
 import { AppLoggerMiddleware } from './commons/middlewares/app-logger.middleware.js';
 import { UtilsModule } from './commons/utils/utils.module.js';
 import { BullConfigService } from './config/bull.config.js';
-import { configuration } from './config/config.js';
+import { configurations } from './config/config.js';
 import { DatabaseConfigService } from './config/database.config.js';
 import { RedisConfigService } from './config/redis.config.js';
 import { EventMqProducerModule } from './rabbitmq/eventmq-producer.module.js';
@@ -20,24 +21,21 @@ import { SampleModule } from './v1/sample/sample.module.js';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
+      load: configurations,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
       useClass: DatabaseConfigService,
     }),
     RedisModule.forRootAsync({
-      imports: [ConfigModule],
       useClass: RedisConfigService,
     }),
     BullModule.forRootAsync({
-      imports: [ConfigModule],
       useClass: BullConfigService,
-      inject: [ConfigService],
     }),
     TerminusModule,
     EventMqProducerModule,
     UtilsModule,
+    CacheManagerModule,
     SampleModule,
   ],
   controllers: [AppController],

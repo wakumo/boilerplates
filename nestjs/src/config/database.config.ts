@@ -1,28 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import path from 'path';
 import { LoggerOptions } from 'typeorm';
 import { fileURLToPath } from 'url';
+
+import { DatabaseConfig } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 @Injectable()
 export class DatabaseConfigService implements TypeOrmOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(DatabaseConfig.KEY)
+    private readonly dbConfig: ConfigType<typeof DatabaseConfig>,
+  ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
       type: 'postgres',
-      host: this.configService.get('db.host'),
-      port: this.configService.get('db.port'),
-      username: this.configService.get('db.user_name'),
-      database: this.configService.get('db.name'),
-      password: this.configService.get('db.password'),
+      host: this.dbConfig.host,
+      port: this.dbConfig.port,
+      username: this.dbConfig.userName,
+      database: this.dbConfig.name,
+      password: this.dbConfig.password,
       entities: [path.join(__dirname, '../**/*.entity{.ts,.js}')],
-      logging: this.configService.get<LoggerOptions>('db.logger_options'),
-      maxQueryExecutionTime: this.configService.get('db.slow_limit'),
+      logging: this.dbConfig.loggerOptions as LoggerOptions,
+      maxQueryExecutionTime: this.dbConfig.slowLimit,
     };
   }
 }

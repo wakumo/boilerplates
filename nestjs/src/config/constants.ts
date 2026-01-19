@@ -6,10 +6,10 @@ import { ColumnOptions } from 'typeorm';
 // times
 export const SECONDS = 1;
 export const MILLISECONDS_TO_SECONDS = 1e-3;
-export const SECONDS_TO_MILLISECONDS = 1000;
+export const SECONDS_MS = 1000;
 
 export const MINUTES = 60 * SECONDS;
-export const MINUTES_MS = 60 * SECONDS_TO_MILLISECONDS;
+export const MINUTES_MS = 60 * SECONDS_MS;
 
 export const HOURS = 60 * MINUTES;
 export const HOURS_MS = 60 * MINUTES_MS;
@@ -23,6 +23,8 @@ export const RABBIT_MQ_TIMEOUT_MS = 1 * MINUTES_MS;
 
 // config const
 export const SLACK_MESSAGE_QUEUE_NAME = 'slack_message';
+
+export const MAX_PER_PAGE = 50;
 
 export function DECIMAL(precision: number, scale: number): ColumnOptions {
   return {

@@ -1,15 +1,17 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { Options } from 'amqplib';
 
+import { RabbitmqConfig } from '../../config/config.js';
 import { RABBIT_MQ_TIMEOUT_MS } from '../../config/constants.js';
 
 @Injectable()
 export class EventMqProducer {
   constructor(
     private readonly rabbitmq: AmqpConnection,
-    private readonly config: ConfigService,
+    @Inject(RabbitmqConfig.KEY)
+    private readonly rabbitmqConfig: ConfigType<typeof RabbitmqConfig>,
   ) {}
 
   async publish(
@@ -18,7 +20,7 @@ export class EventMqProducer {
     payload: any,
     opts?: Options.Publish,
   ): Promise<void> {
-    if (!exchange) exchange = this.config.get('rabbitmq.exchange.name')!;
+    if (!exchange) exchange = this.rabbitmqConfig.exchange.name!;
     await this.rabbitmq.publish(exchange, routingKey, payload, opts);
   }
 
@@ -28,7 +30,7 @@ export class EventMqProducer {
     payload: unknown,
     headers?: unknown,
   ): Promise<T> {
-    if (!exchange) exchange = this.config.get('rabbitmq.exchange.name')!;
+    if (!exchange) exchange = this.rabbitmqConfig.exchange.name!;
     return this.rabbitmq.request<T>({
       exchange,
       routingKey,
