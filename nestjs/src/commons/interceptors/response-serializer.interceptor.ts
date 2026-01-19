@@ -38,7 +38,7 @@ function isDataWithPaginationMetadata(
 }
 
 @Injectable()
-export class SerializerInterceptor implements NestInterceptor {
+export class ResponseSerializerInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       map((data: unknown) => {

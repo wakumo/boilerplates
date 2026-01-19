@@ -1,1 +1,1 @@
-export * from './serializer.interceptor.js';
+export * from './response-serializer.interceptor.js';

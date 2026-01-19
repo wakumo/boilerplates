@@ -1,103 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { IncomingWebhook } from '@slack/webhook';
 
-import { PaginationMetadata } from '../interfaces/pagination-metadata.interface.js';
+import { SlackConfig } from '../../config/config.js';
 
 @Injectable()
 export class HelperService {
   private readonly slackWebhook: IncomingWebhook;
 
-  constructor(private readonly config: ConfigService) {
-    this.slackWebhook = new IncomingWebhook(
-      this.config.get('slack.webhook_url')!,
-    );
-  }
-
-  generatePaginationMetadata(
-    page: number,
-    per: number,
-    totalCount: number,
-  ): PaginationMetadata {
-    const totalPages = Math.ceil(totalCount / per);
-    return {
-      current_page: page,
-      next_page: page >= totalPages ? null : page + 1,
-      prev_page: page === 1 ? null : page - 1,
-      total_pages: totalPages,
-      total_count: totalCount,
-    };
-  }
-
-  sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  delay<T>(fn: () => T, ms: number): Promise<T> {
-    return new Promise((resolve) => setTimeout(() => resolve(fn()), ms));
-  }
-
-  retry<T>(
-    fn: () => Promise<T>,
-    maxAttempts = 3,
-    delayInSeconds = 1,
-  ): Promise<T> {
-    const execute = async (attempt: number): Promise<T> => {
-      try {
-        return await fn();
-      } catch (err) {
-        if (attempt <= maxAttempts) {
-          const nextAttempt = attempt + 1;
-          console.error(
-            `Retrying after ${delayInSeconds} seconds due to:`,
-            err,
-          );
-          return await this.delay(
-            () => execute(nextAttempt),
-            delayInSeconds * 1000,
-          );
-        } else {
-          throw err;
-        }
-      }
-    };
-    return execute(1);
-  }
-
-  // Spilit an array to multi chunk arrays
-  //
-  // chunkArray(100, 980, 100)
-  //
-  // [
-  //     [100, 200],
-  //     [200, 300],
-  //     [300, 400],
-  //     [400, 500],
-  //     [500, 600],
-  //     [600, 700],
-  //     [700, 800],
-  //     [800, 900],
-  //     [900, 980]
-  // ]
-  chunkArray(from: number, to: number, chunkSize: number): number[][] {
-    const results: number[][] = [];
-    let current = from;
-    while (current <= to) {
-      if (current > to) break;
-      results.push([current, Math.min(current + chunkSize, to)]);
-      current += chunkSize;
-    }
-    return results;
-  }
-
-  // split a big array into smaller arrays of fixed size
-  // e.g splitArray([1,2,3,4,5,6,7,8,9,10], 3)
-  // => [[1,2,3], [4,5,6], [7,8,9], [10]]
-  splitArray<T>(array: T[], size: number): T[][] {
-    return Array(Math.ceil(array.length / size))
-      .fill(null)
-      .map((_, index) => index * size)
-      .map((begin) => array.slice(begin, begin + size));
+  constructor(
+    @Inject(SlackConfig.KEY)
+    private readonly slackConfig: ConfigType<typeof SlackConfig>,
+  ) {
+    this.slackWebhook = new IncomingWebhook(this.slackConfig.webhookUrl!);
   }
 
   async notifySlackMessage(msg: string) {

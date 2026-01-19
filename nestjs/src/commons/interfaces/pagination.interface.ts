@@ -1,3 +1,8 @@
+export interface PaginationQuery {
+  page: number;
+  per: number;
+}
+
 export interface PaginationMetadata {
   current_page: number;
   next_page: number | null;

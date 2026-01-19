@@ -2,29 +2,31 @@ import {
   MessageHandlerErrorBehavior,
   RabbitMQConfig,
 } from '@golevelup/nestjs-rabbitmq';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+
+import { RabbitmqConfig } from './config.js';
 
 @Injectable()
 export class RabbitMqConfigService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(RabbitmqConfig.KEY)
+    private readonly rabbitmqConfig: ConfigType<typeof RabbitmqConfig>,
+  ) {}
 
   create(): RabbitMQConfig {
-    const host = this.configService.get<string>('rabbitmq.host')!;
-    const port = this.configService.get<string>('rabbitmq.port')!;
-    const user = this.configService.get<string>('rabbitmq.user')!;
-    const pass = this.configService.get<string>('rabbitmq.pass')!;
+    const { host, port, user, pass, exchange } = this.rabbitmqConfig;
     return {
       exchanges: [
         {
-          name: this.configService.get('rabbitmq.exchange.name')!,
+          name: exchange.name!,
           type: 'topic',
           options: {
             durable: true,
           },
         },
         {
-          name: this.configService.get('rabbitmq.exchange.dlx')!,
+          name: exchange.dlx,
           type: 'topic',
           options: {
             durable: true,

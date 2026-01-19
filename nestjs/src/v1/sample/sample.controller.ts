@@ -5,10 +5,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { SerializerInterceptor } from '../../commons/interceptors/serializer.interceptor.js';
+import { ResponseSerializerInterceptor } from '../../commons/interceptors/response-serializer.interceptor.js';
 import { SampleService } from './sample.service.js';
 
-@UseInterceptors(SerializerInterceptor, ClassSerializerInterceptor)
+@UseInterceptors(ResponseSerializerInterceptor, ClassSerializerInterceptor)
 @Controller({ path: 'sample', version: 'v1' })
 export class SampleController {
   constructor(private readonly sampleService: SampleService) {}

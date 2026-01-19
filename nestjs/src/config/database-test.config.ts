@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { BaseEntity } from 'typeorm';
+import { BaseEntity, LoggerOptions } from 'typeorm';
 
 import * as entitiesIndex from '../../src/entities/index.js';
+import { DatabaseConfig } from './config.js';
+
 const entities = Object.values(entitiesIndex).filter(
   (entity: unknown): entity is typeof BaseEntity =>
     typeof entity === 'function' && entity.prototype instanceof BaseEntity,
@@ -11,17 +13,25 @@ const entities = Object.values(entitiesIndex).filter(
 
 @Injectable()
 export class DatabaseTestConfigService implements TypeOrmOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(DatabaseConfig.KEY)
+    private readonly dbConfig: ConfigType<typeof DatabaseConfig>,
+  ) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
+      name: 'default',
       type: 'postgres',
-      host: this.configService.get('db.host'),
-      port: this.configService.get('db.port'),
-      username: this.configService.get('db.user_name'),
-      database: this.configService.get('db.name_test'),
-      password: this.configService.get('db.password'),
-      entities: entities,
+      host: this.dbConfig.host,
+      port: this.dbConfig.port,
+      username: this.dbConfig.userName,
+      database: this.dbConfig.nameTest,
+      password: this.dbConfig.password,
+      // due to typeorm issue, it is advisable to use imported entities for testing instead of path joining
+      // ref: https://github.com/typeorm/typeorm/issues/11095
+      entities: entities as (typeof BaseEntity)[],
+      logging: this.dbConfig.loggerOptions as LoggerOptions,
+      maxQueryExecutionTime: this.dbConfig.slowLimit,
       synchronize: true,
     };
   }

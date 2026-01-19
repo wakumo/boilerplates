@@ -2,17 +2,22 @@ import {
   BullModuleOptions,
   SharedBullConfigurationFactory,
 } from '@nestjs/bull';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+
+import { RedisConfig } from './config.js';
 
 @Injectable()
 export class BullConfigService implements SharedBullConfigurationFactory {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(RedisConfig.KEY)
+    private readonly redisConfig: ConfigType<typeof RedisConfig>,
+  ) {}
   createSharedConfiguration(): BullModuleOptions {
     return {
       redis: {
-        host: this.configService.get('redis.host'),
-        port: this.configService.get('redis.port'),
+        host: this.redisConfig.host,
+        port: this.redisConfig.port,
         keyPrefix: 'boilerplate:',
       },
     };
