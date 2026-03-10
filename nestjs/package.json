@@ -73,17 +73,17 @@
     "reflect-metadata": "^0.2.2",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "ts-jest-resolver": "^2.0.0",
     "typeorm": "^0.3.10",
     "web3": "4.0.1-alpha.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.0-0",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.0.0",
+    "@swc/core": "^1.15.11",
+    "@swc/jest": "^0.2.39",
     "@types/amqplib": "^0.10.0",
     "@types/bull": "^3.15.9",
     "@types/express": "^4.17.13",
@@ -106,60 +106,12 @@
     "prettier": "^3.0.0",
     "source-map-support": "^0.5.20",
     "supertest": "^7.1.3",
-    "ts-jest": "^29.0.0",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "4.1.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.25.0",
     "webpack": "^5.74.0"
-  },
-  "jest": {
-    "injectGlobals": true,
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "resolver": "ts-jest-resolver",
-    "rootDir": ".",
-    "testRegex": ".*\\.spec\\.ts$",
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
-    "transform": {
-      "^.+\\.ts$": [
-        "ts-jest",
-        {
-          "useESM": true,
-          "diagnostics": {
-            "ignoreCodes": [
-              151002
-            ]
-          }
-        }
-      ]
-    },
-    "setupFiles": [
-      "<rootDir>/test/setup/test-setup.js"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/setup/global-setup.ts"
-    ],
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1",
-      "^@/src/(.*)$": "<rootDir>/src/$1",
-      "^src/(.*)$": "<rootDir>/src/$1",
-      "^@/test/(.*)$": "<rootDir>/test/$1"
-    },
-    "coverageDirectory": "../coverage",
-    "forceExit": true,
-    "maxWorkers": 1,
-    "testTimeout": 60000,
-    "testEnvironment": "node"
   },
   "peerDependencies": {
     "bull": "^4.10.0"

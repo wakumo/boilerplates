@@ -1,6 +1,6 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
 import { Options } from 'amqplib';
 
 import { RabbitmqConfig } from '../../config/config.js';
@@ -17,7 +17,7 @@ export class EventMqProducer {
   async publish(
     exchange: string,
     routingKey: string,
-    payload: any,
+    payload: unknown,
     opts?: Options.Publish,
   ): Promise<void> {
     if (!exchange) exchange = this.rabbitmqConfig.exchange.name!;

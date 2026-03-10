@@ -8,7 +8,13 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default defineConfig([
   {
-    ignores: ['eslint.config.mjs', 'src/migrations/**/*'],
+    ignores: [
+      'eslint.config.mjs',
+      'jest.config.mjs',
+      'src/migrations/**/*',
+      'src/**/*.spec.ts',
+      '.local/**/*'
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
