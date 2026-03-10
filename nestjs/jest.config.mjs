@@ -1,0 +1,26 @@
+export default {
+  injectGlobals: true,
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  rootDir: '.',
+  testRegex: '.*\\.spec\\.ts$',
+  transform: {
+    '^.+\\.(t|j)s$': ['@swc/jest'],
+  },
+  setupFilesAfterEnv: ['<rootDir>/test/setup/global-setup.ts'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^@/src/(.*)$': '<rootDir>/src/$1',
+    '^src/(.*)$': '<rootDir>/src/$1',
+    '^@/test/(.*)$': '<rootDir>/test/$1',
+  },
+  collectCoverageFrom: ['**/*.(t|j)s'],
+  coverageDirectory: '../coverage',
+  forceExit: true,
+  maxWorkers: 1,
+  testTimeout: 60000,
+  testEnvironment: 'node',
+  workerIdleMemoryLimit: '1536MB',
+  logHeapUsage: true,
+  verbose: false,
+};

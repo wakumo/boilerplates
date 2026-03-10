@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken';
 import { BaseEntity, DataSource, DataSourceOptions } from 'typeorm';
 
 import { sleep } from '../../src/commons/utils/async.helper.js';
-import { configuration } from '../../src/config/config.js';
+import { configurations } from '../../src/config/config.js';
 import {
   MILLISECONDS_TO_SECONDS,
   TOKEN_EXPIRE_TIME,
@@ -25,7 +25,7 @@ const entities = Object.values(entitiesIndex).filter(
 export const IMPORT_MODULES = [
   ConfigModule.forRoot({
     isGlobal: true,
-    load: [configuration],
+    load: configurations,
   }),
   TypeOrmModule.forRootAsync({
     imports: [ConfigModule],

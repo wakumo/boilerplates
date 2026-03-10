@@ -1,14 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unnecessary-type-assertion */
+import { jest } from '@jest/globals';
 import { Module } from '@nestjs/common';
 
 @Module({})
 class MockModule {}
 
-jest.mock('@golevelup/nestjs-rabbitmq', () => {
+jest.unstable_mockModule('@golevelup/nestjs-rabbitmq', () => {
+  console.log('SUCCESSFULLY MOCKED RABBITMQ LIB');
   const originalModule = jest.requireActual(
     '@golevelup/nestjs-rabbitmq',
-  ) as unknown as typeof import('@golevelup/nestjs-rabbitmq');
+  ) as any;
 
-  return Object.assign(originalModule, {
+  return {
+    ...originalModule,
     RabbitMQModule: {
       forRootAsync: jest.fn(() => MockModule),
     },
@@ -21,7 +25,7 @@ jest.mock('@golevelup/nestjs-rabbitmq', () => {
         return true;
       }),
     })),
-  });
+  };
 });
 
 export default {};

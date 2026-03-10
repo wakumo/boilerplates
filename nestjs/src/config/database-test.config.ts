@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { BaseEntity, LoggerOptions } from 'typeorm';
+import type { LoggerOptions } from 'typeorm';
+import { BaseEntity } from 'typeorm';
 
 import * as entitiesIndex from '../../src/entities/index.js';
 import { DatabaseConfig } from './config.js';
