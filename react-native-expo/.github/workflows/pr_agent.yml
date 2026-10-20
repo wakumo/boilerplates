@@ -16,5 +16,9 @@ jobs:
         id: pragent
         uses: qodo-ai/pr-agent@main
         env:
-          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          OPENAI_KEY: ${{ secrets.SHARED_AI_PROXY_API_KEY }}
+          OPENAI__API_BASE: ${{ secrets.SHARED_AI_PROXY_HOST }}
+          config.model: ${{ vars.SHARED_AI_PROXY_MODEL }}
+          config.reasoning_effort: "medium"
+          config.fallback_models: '["${{ vars.SHARED_AI_PROXY_MODEL_FALLBACKS }}"]'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
