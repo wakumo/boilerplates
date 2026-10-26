@@ -1,4 +1,4 @@
-import {
+import type {
   RedisModuleOptions,
   RedisOptionsFactory,
 } from '@liaoliaots/nestjs-redis';
@@ -18,9 +18,8 @@ export class RedisConfigService implements RedisOptionsFactory {
     return {
       closeClient: true,
       config: {
-        host: this.redisConfig.host,
-        port: this.redisConfig.port,
-        keyPrefix: 'boilerplate:',
+        ...this.redisConfig.baseConfig,
+        keyPrefix: this.redisConfig.keyPrefix,
       },
     };
   }

@@ -1,4 +1,4 @@
-import {
+import type {
   BullModuleOptions,
   SharedBullConfigurationFactory,
 } from '@nestjs/bull';
@@ -15,11 +15,8 @@ export class BullConfigService implements SharedBullConfigurationFactory {
   ) {}
   createSharedConfiguration(): BullModuleOptions {
     return {
-      redis: {
-        host: this.redisConfig.host,
-        port: this.redisConfig.port,
-        keyPrefix: 'boilerplate:',
-      },
+      redis: this.redisConfig.baseConfig,
+      prefix: this.redisConfig.keyPrefix,
     };
   }
 }

@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 # Run migrations
 yarn db:migrate:up:prod

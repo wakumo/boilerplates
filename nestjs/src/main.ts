@@ -1,4 +1,4 @@
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module.js';
@@ -19,6 +19,6 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap().catch((error) => {
-  console.error(error);
+  Logger.error(error, undefined, 'Bootstrap');
   process.exit(1);
 });

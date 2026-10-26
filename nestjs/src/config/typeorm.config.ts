@@ -6,13 +6,16 @@ import { DataSource } from 'typeorm';
 const isEntitiesBuilt = fs.existsSync('./dist/src/entities');
 const isMigrationsBuilt = fs.existsSync('./dist/src/migrations');
 
-const entitiesPath = isEntitiesBuilt
-  ? 'dist/src/entities/**/*.entity.js'
-  : 'src/entities/**/*.entity.ts';
+const useBuiltFiles = import.meta.url.endsWith('.js');
+const entitiesPath =
+  useBuiltFiles || (isEntitiesBuilt && process.env.NODE_ENV !== 'local')
+    ? 'dist/src/entities/**/*.entity.js'
+    : 'src/entities/**/*.entity.ts';
 
-const migrationsPath = isMigrationsBuilt
-  ? 'dist/src/migrations/*.js'
-  : 'src/migrations/*.ts';
+const migrationsPath =
+  useBuiltFiles || (isMigrationsBuilt && process.env.NODE_ENV !== 'local')
+    ? 'dist/src/migrations/*.js'
+    : 'src/migrations/*.ts';
 
 export default new DataSource({
   type: 'postgres',

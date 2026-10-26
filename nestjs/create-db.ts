@@ -1,33 +1,45 @@
-import { client, dbName, dbNameTest } from './pg-client.js';
+import pg from 'pg';
 
-(async function () {
+import {
+  client,
+  connectionOptions,
+  dbName,
+  dbNameTest,
+  quoteDatabaseName,
+} from './pg-client.js';
+
+try {
+  const testConfig =
+    process.env.NODE_ENV === 'test'
+      ? (await import('./test-config.cjs')).default
+      : undefined;
+  const names = testConfig
+    ? Array.from({ length: testConfig.testMaxWorkers }, (_, index) =>
+        testConfig.testDatabaseName(dbNameTest, String(index + 1)),
+      )
+    : [dbName];
+  names.forEach(quoteDatabaseName);
   await client.connect();
-  if (process.env.NODE_ENV === 'test') {
-    const table_query = await client.query(
-      `SELECT 1 FROM pg_database WHERE datname='${dbNameTest}'`,
+  for (const name of names) {
+    const existing = await client.query(
+      'SELECT 1 FROM pg_database WHERE datname = $1',
+      [name],
     );
-    if (!table_query.rowCount) {
-      await client.query(`CREATE DATABASE "${dbNameTest}"`); // setup test db
-      await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-      console.info(`CREATED TEST DB ${dbNameTest}`);
+    if (!existing.rowCount) {
+      await client.query(`CREATE DATABASE ${quoteDatabaseName(name)}`);
+      console.info(`CREATED DB ${name}`);
     }
-  } else {
-    const table_query = await client.query(
-      `SELECT 1 FROM pg_database WHERE datname='${dbName}'`,
-    );
-    if (!table_query.rowCount) {
-      await client.query(`CREATE DATABASE "${dbName}"`);
-      await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-      console.info(`CREATED DB ${dbName}`);
+    const target = new pg.Client({ ...connectionOptions, database: name });
+    try {
+      await target.connect();
+      await target.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+    } finally {
+      await target.end();
     }
   }
-})()
-  .then(async () => {
-    await client.end();
-    process.exit(0);
-  })
-  .catch(async (ex) => {
-    console.log(ex);
-    await client.end();
-    process.exit(0);
-  });
+} catch (error) {
+  console.error(error);
+  process.exitCode = 1;
+} finally {
+  await client.end();
+}

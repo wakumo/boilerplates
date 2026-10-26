@@ -1,19 +1,11 @@
+import 'dotenv/config';
+
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { BullModule } from '@nestjs/bull';
-import {
-  DynamicModule,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  Type,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
-import { AppLoggerMiddleware } from './commons/middlewares/app-logger.middleware.js';
 import { BullConfigService } from './config/bull.config.js';
 import { configurations } from './config/config.js';
 import { DatabaseConfigService } from './config/database.config.js';
@@ -22,35 +14,25 @@ import { EventMqAppModule } from './rabbitmq/eventmq-app.module.js';
 import { EventMqProducerModule } from './rabbitmq/eventmq-producer.module.js';
 import { SCRIPTS } from './scripts/index.js';
 
-const imports: Array<Type<any> | DynamicModule | Promise<DynamicModule>> = [];
-if (process.env.RABBITMQ_MODE === 'true') {
-  imports.push(EventMqAppModule);
-}
-
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: configurations,
-    }),
+    ConfigModule.forRoot({ isGlobal: true, load: configurations }),
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
       useClass: DatabaseConfigService,
     }),
     RedisModule.forRootAsync({
+      imports: [ConfigModule],
       useClass: RedisConfigService,
     }),
     BullModule.forRootAsync({
+      imports: [ConfigModule],
       useClass: BullConfigService,
     }),
-    TerminusModule,
-    EventMqProducerModule,
-    ...imports,
+    ...(process.env.RABBITMQ_MODE === 'true'
+      ? [EventMqAppModule]
+      : [EventMqProducerModule]),
   ],
-  controllers: [AppController],
-  providers: [AppService, ...SCRIPTS],
+  providers: SCRIPTS,
 })
-export class JobModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*');
-  }
-}
+export class JobModule {}
