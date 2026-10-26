@@ -6,7 +6,6 @@ import { Module } from '@nestjs/common';
 class MockModule {}
 
 jest.unstable_mockModule('@golevelup/nestjs-rabbitmq', () => {
-  console.log('SUCCESSFULLY MOCKED RABBITMQ LIB');
   const originalModule = jest.requireActual(
     '@golevelup/nestjs-rabbitmq',
   ) as any;

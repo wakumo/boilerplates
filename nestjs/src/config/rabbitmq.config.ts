@@ -1,6 +1,6 @@
 import {
   MessageHandlerErrorBehavior,
-  RabbitMQConfig,
+  type RabbitMQConfig,
 } from '@golevelup/nestjs-rabbitmq';
 import { Inject, Injectable } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
@@ -42,9 +42,6 @@ export class RabbitMqConfigService {
         'default-channel': {
           prefetchCount: 20,
           default: true,
-        },
-        'channel-2': {
-          prefetchCount: 1,
         },
       },
     };

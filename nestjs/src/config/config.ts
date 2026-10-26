@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import type { LoggerOptions } from 'typeorm';
 
 // Sample config
 export const SampleConfig = registerAs('sample', () => ({
@@ -16,14 +17,17 @@ export const DatabaseConfig = registerAs('database', () => ({
   loggerOptions:
     process.env.ENV_NAME === 'development'
       ? true
-      : ['warn', 'error', 'migration'],
+      : (['warn', 'error', 'migration'] as LoggerOptions),
   slowLimit: Number(process.env.DB_SLOW_LIMIT) || 500, // ms
 }));
 
 // Redis config
 export const RedisConfig = registerAs('redis', () => ({
-  host: process.env.REDIS_HOST,
-  port: Number(process.env.REDIS_PORT) || 6379,
+  baseConfig: {
+    host: process.env.REDIS_HOST || '127.0.0.1',
+    port: Number(process.env.REDIS_PORT) || 6379,
+  },
+  keyPrefix: 'boilerplate:',
 }));
 
 // RabbitMQ config
@@ -32,6 +36,7 @@ export const RabbitmqConfig = registerAs('rabbitmq', () => ({
   port: Number(process.env.RABBITMQ_PORT) || 5672,
   user: process.env.RABBITMQ_USER ?? 'guest',
   pass: process.env.RABBITMQ_PASS ?? 'guest',
+  envName: process.env.ENV_NAME ?? 'development',
   exchange: {
     name: process.env.RABBITMQ_EXCHANGE_NAME,
     dlx: `${process.env.RABBITMQ_EXCHANGE_NAME}-dlx`,

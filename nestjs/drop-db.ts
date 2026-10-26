@@ -1,17 +1,24 @@
-import { client, dbName, dbNameTest } from './pg-client.js';
-client.connect();
+import { client, dbName, dbNameTest, quoteDatabaseName } from './pg-client.js';
 
-(async function () {
-  await client.query(`DROP DATABASE IF EXISTS "${dbName}"`);
-  await client.query(`DROP DATABASE IF EXISTS "${dbNameTest}"`);
-})()
-  .then(() => {
-    console.log('ok');
-    client.end();
-    process.exit(0);
-  })
-  .catch((ex) => {
-    console.log(ex);
-    client.end();
-    process.exit(0);
-  });
+try {
+  const testConfig =
+    process.env.NODE_ENV === 'test'
+      ? (await import('./test-config.cjs')).default
+      : undefined;
+  const names = testConfig
+    ? Array.from({ length: testConfig.testMaxWorkers }, (_, index) =>
+        testConfig.testDatabaseName(dbNameTest, String(index + 1)),
+      )
+    : [dbName];
+  names.forEach(quoteDatabaseName);
+  await client.connect();
+  for (const name of names) {
+    await client.query(`DROP DATABASE IF EXISTS ${quoteDatabaseName(name)}`);
+    console.info(`DROPPED DB ${name}`);
+  }
+} catch (error) {
+  console.error(error);
+  process.exitCode = 1;
+} finally {
+  await client.end();
+}

@@ -24,12 +24,15 @@ import { SampleModule } from './v1/sample/sample.module.js';
       load: configurations,
     }),
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
       useClass: DatabaseConfigService,
     }),
     RedisModule.forRootAsync({
+      imports: [ConfigModule],
       useClass: RedisConfigService,
     }),
     BullModule.forRootAsync({
+      imports: [ConfigModule],
       useClass: BullConfigService,
     }),
     TerminusModule,
@@ -43,6 +46,6 @@ import { SampleModule } from './v1/sample/sample.module.js';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*');
+    consumer.apply(AppLoggerMiddleware).forRoutes('{*path}');
   }
 }

@@ -17,6 +17,7 @@ import {
 } from '../../src/config/constants.js';
 import { DatabaseTestConfigService } from '../../src/config/database-test.config.js';
 import * as entitiesIndex from '../../src/entities/index.js';
+import testConfig from '../../test-config.cjs';
 const entities = Object.values(entitiesIndex).filter(
   (entity: unknown): entity is typeof BaseEntity =>
     typeof entity === 'function' && entity.prototype instanceof BaseEntity,
@@ -41,7 +42,11 @@ export async function getSynchronizeConnection() {
   const dataSource = new DataSource({
     name: 'default',
     type: 'postgres' as const,
-    database: process.env.DB_NAME_TEST,
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT) || 5432,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: testConfig.testDatabaseName(process.env.DB_NAME_TEST),
     entities: entities as (typeof BaseEntity)[],
     synchronize: true,
   } as DataSourceOptions);
@@ -113,7 +118,13 @@ export function createNestApplication(module: TestingModule): INestApplication {
     type: VersioningType.URI,
     prefix: false,
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      stopAtFirstError: true,
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   return app;
 }

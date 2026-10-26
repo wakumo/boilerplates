@@ -26,5 +26,5 @@ export class EventMqMockModule {}
 
 jest.unstable_mockModule(
   '../../src/rabbitmq/eventmq-producer.module.js',
-  () => EventMqMockModule,
+  () => ({ EventMqProducerModule: EventMqMockModule }),
 );

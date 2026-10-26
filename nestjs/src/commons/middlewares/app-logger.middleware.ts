@@ -1,9 +1,9 @@
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import { Injectable, Logger, type NestMiddleware } from '@nestjs/common';
+import type { NextFunction, Request, Response } from 'express';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
-  private logger = new Logger();
+  private logger = new Logger(AppLoggerMiddleware.name);
 
   use(request: Request, response: Response, next: NextFunction): void {
     const { ip, method, baseUrl: url } = request;
@@ -12,6 +12,10 @@ export class AppLoggerMiddleware implements NestMiddleware {
     response.on('close', () => {
       const { statusCode } = response;
       const contentLength = response.get('content-length');
+
+      const isHealthCheck = url.startsWith('/healthz');
+      const isSuccess = statusCode >= 200 && statusCode < 300;
+      if (isHealthCheck && isSuccess) return;
 
       const queries = Object.entries(request.query);
       const appendUrl = queries
@@ -30,11 +34,15 @@ export class AppLoggerMiddleware implements NestMiddleware {
         })
         .join('&');
 
-      this.logger.log(
-        `${method} ${
-          url + (queries.length ? '?' + appendUrl : '')
-        } ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
-      );
+      const log = `${method} ${
+        url + (queries.length ? '?' + appendUrl : '')
+      } ${statusCode} ${contentLength} - ${userAgent} ${ip}`;
+
+      if (isSuccess) {
+        this.logger.log(log);
+      } else {
+        this.logger.error(log);
+      }
     });
 
     next();

@@ -11,9 +11,11 @@ export default defineConfig([
     ignores: [
       'eslint.config.mjs',
       'jest.config.mjs',
+      'test/setup/test-setup.js',
+      'test-config.cjs',
       'src/migrations/**/*',
       'src/**/*.spec.ts',
-      '.local/**/*'
+      '.local/**/*',
     ],
   },
   eslint.configs.recommended,
@@ -28,7 +30,7 @@ export default defineConfig([
         ...globals.node,
         ...globals.jest,
       },
-      sourceType: 'commonjs',
+      sourceType: 'module',
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
@@ -40,7 +42,8 @@ export default defineConfig([
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
-      '@typescript-eslint/no-unused-vars': [ // allow unused variables that start with an underscore (e.g. placeholder variables)
+      '@typescript-eslint/no-unused-vars': [
+        // allow unused variables that start with an underscore (e.g. placeholder variables)
         'error',
         {
           argsIgnorePattern: '^_',

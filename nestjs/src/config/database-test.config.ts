@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import type { LoggerOptions } from 'typeorm';
 import { BaseEntity } from 'typeorm';
 
 import * as entitiesIndex from '../../src/entities/index.js';
+import testConfig from '../../test-config.cjs';
 import { DatabaseConfig } from './config.js';
 
 const entities = Object.values(entitiesIndex).filter(
@@ -26,12 +26,12 @@ export class DatabaseTestConfigService implements TypeOrmOptionsFactory {
       host: this.dbConfig.host,
       port: this.dbConfig.port,
       username: this.dbConfig.userName,
-      database: this.dbConfig.nameTest,
+      database: testConfig.testDatabaseName(this.dbConfig.nameTest),
       password: this.dbConfig.password,
       // due to typeorm issue, it is advisable to use imported entities for testing instead of path joining
       // ref: https://github.com/typeorm/typeorm/issues/11095
       entities: entities as (typeof BaseEntity)[],
-      logging: this.dbConfig.loggerOptions as LoggerOptions,
+      logging: this.dbConfig.loggerOptions,
       maxQueryExecutionTime: this.dbConfig.slowLimit,
       synchronize: true,
     };
