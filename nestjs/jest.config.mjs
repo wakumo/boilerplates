@@ -1,4 +1,13 @@
+import { availableParallelism, totalmem } from 'node:os';
+
 import testConfig from './test-config.cjs';
+
+const cpuCount = availableParallelism();
+const maxWorkers = Math.min(testConfig.testMaxWorkers, cpuCount);
+
+console.info(
+  `Jest host: ${cpuCount} CPUs, ${Math.round(totalmem() / 2 ** 30)} GiB RAM; workers: ${maxWorkers}`,
+);
 
 export default {
   injectGlobals: true,
@@ -19,7 +28,7 @@ export default {
   },
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
-  maxWorkers: testConfig.testMaxWorkers,
+  maxWorkers,
   testTimeout: 60000,
   testEnvironment: 'node',
   workerIdleMemoryLimit: '1536MB',
