@@ -14,6 +14,7 @@ async function bootstrap() {
       stopAtFirstError: true,
       transform: true,
       whitelist: true,
+      forbidUnknownValues: true,
     }),
   );
   await app.listen(3000);

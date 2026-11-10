@@ -123,6 +123,7 @@ export function createNestApplication(module: TestingModule): INestApplication {
       stopAtFirstError: true,
       transform: true,
       whitelist: true,
+      forbidUnknownValues: true,
     }),
   );
 

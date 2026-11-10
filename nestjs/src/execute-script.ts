@@ -5,21 +5,16 @@ import { CommandFactory } from 'nest-commander';
 
 import { JobModule } from './job.module.js';
 
+const logger = new Logger('ExecuteScript');
+
 const bootstrap = async () => {
-  await CommandFactory.run(JobModule, {
-    logger: ['warn', 'error', 'verbose'],
-    serviceErrorHandler: (error) => {
-      Logger.error(error, undefined, 'ExecuteScript');
-      process.exitCode = 1;
-    },
-  });
+  await CommandFactory.run(JobModule, ['log', 'warn', 'error', 'verbose']);
 };
 
 bootstrap()
   .then(() => {
-    Logger.log('Script executed successfully', 'ExecuteScript');
+    logger.verbose('Script executed successfully');
   })
   .catch((error) => {
-    Logger.error(error, undefined, 'ExecuteScript');
-    process.exitCode = 1;
+    console.error(error);
   });

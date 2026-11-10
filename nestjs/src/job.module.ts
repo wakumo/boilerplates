@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { DynamicModule, ForwardReference, Module, Type } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -13,6 +13,13 @@ import { RedisConfigService } from './config/redis.config.js';
 import { EventMqAppModule } from './rabbitmq/eventmq-app.module.js';
 import { EventMqProducerModule } from './rabbitmq/eventmq-producer.module.js';
 import { SCRIPTS } from './scripts/index.js';
+const imports: Array<
+  Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
+> = [];
+
+if (process.env.RABBITMQ_MODE === 'true') {
+  imports.push(EventMqAppModule);
+}
 
 @Module({
   imports: [
@@ -29,9 +36,8 @@ import { SCRIPTS } from './scripts/index.js';
       imports: [ConfigModule],
       useClass: BullConfigService,
     }),
-    ...(process.env.RABBITMQ_MODE === 'true'
-      ? [EventMqAppModule]
-      : [EventMqProducerModule]),
+    EventMqProducerModule,
+    ...imports,
   ],
   providers: SCRIPTS,
 })
