@@ -2,10 +2,11 @@
 
 ## Prerequisites
 
-- Node **22.23.4** (see `.node-version`) and Corepack/Yarn **4.14.1**.
+- Node **26.13.0**, Corepack **0.36.0**, and Yarn **4.14.1**. Node 26 does not bundle Corepack.
 - PostgreSQL, Redis, and RabbitMQ. CI uses PostgreSQL 13.14; choose a supported PostgreSQL release for a new deployment.
 
 ```sh
+npm install --global corepack@0.36.0
 corepack enable
 corepack prepare yarn@4.14.1 --activate
 cp .env.example .env
@@ -55,6 +56,8 @@ The HTTP app is RabbitMQ producer-only. Set `RABBITMQ_MODE=true` for job consume
 
 Place runtime assets under `src/assets/`; Nest copies them to `dist/src/assets/`. TypeScript uses NodeNext ESM: keep `.js` suffixes on local imports. ESLint uses only `eslint.config.mjs`; generated migrations are excluded from formatting.
 
+Request DTOs must have class-validator metadata: the global validation pipe enables `forbidUnknownValues`, so DTO classes without validation decorators return HTTP 400. Unknown properties on validated DTOs are stripped by `whitelist`.
+
 ## Container and CI
 
 ```sh
@@ -62,7 +65,7 @@ docker build --pull -t nestjs-starter .
 docker run --env-file .env -p 3000:3000 nestjs-starter
 ```
 
-Supply container-reachable service hosts and set `NODE_ENV=production` when deploying. Both image stages pin Node 22.23.4; production installs runtime dependencies only. Startup runs compiled migrations and stops if they fail. `.dockerignore` excludes local secrets, dependencies and generated output.
+Supply container-reachable service hosts and set `NODE_ENV=production` when deploying. Both image stages pin Node 26.13.0 and explicitly install Corepack 0.36.0; production installs runtime dependencies only. Startup runs compiled migrations and stops if they fail. `.dockerignore` excludes local secrets, dependencies and generated output.
 
 CI installs immutable dependencies, builds, prepares worker databases, and runs `yarn test`. PR-Agent uses the shared proxy variables; `SHARED_AI_PROXY_MODEL_FALLBACKS` must contain the fallback list in the format expected by PR-Agent. Deployment registry, Kubernetes configuration and Jenkins credentials belong to the consuming project.
 

@@ -8,7 +8,7 @@
   "type": "module",
   "engines": {
     "npm": "please-use-yarn",
-    "node": ">=22.23.4",
+    "node": ">=26.13.0 <27",
     "yarn": ">=4.14.1 <5"
   },
   "scripts": {
@@ -18,20 +18,22 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main.js",
+    "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "test": "node --no-warnings --experimental-vm-modules $( [ -f ./node_modules/.bin/jest ] && echo ./node_modules/.bin/jest || which jest )",
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv/config",
-    "ts-node-esm": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));'",
+    "ts-node-esm": "node --no-deprecation --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));'",
     "typeorm": "yarn ts-node-esm ./node_modules/.bin/typeorm -d ./src/config/typeorm.config.ts",
     "typeorm:cli": "yarn ts-node-esm ./node_modules/.bin/typeorm",
     "typeorm:prod": "node ./node_modules/.bin/typeorm -d ./dist/src/config/typeorm.config.js",
     "execute": "node dist/src/execute-script.js",
+    "execute:nostop": "node dist/src/execute-script-nostop.js",
     "execute:dev": "yarn ts-node-esm src/execute-script.ts",
-    "db:create": "tsx create-db.ts",
-    "db:create:test": "NODE_ENV=test tsx create-db.ts",
-    "db:drop": "tsx drop-db.ts",
-    "db:drop:test": "NODE_ENV=test tsx drop-db.ts",
+    "execute:dev:nostop": "yarn ts-node-esm src/execute-script-nostop.ts",
+    "db:create": "npx tsx create-db.ts",
+    "db:create:test": "NODE_ENV=test npx tsx create-db.ts",
+    "db:drop": "npx tsx drop-db.ts",
+    "db:drop:test": "NODE_ENV=test npx tsx drop-db.ts",
     "db:drop:prod": "node dist/drop-db.js",
     "db:schema:drop": "yarn typeorm schema:drop",
     "db:migrate:create": "yarn typeorm:cli migration:create",
@@ -40,9 +42,7 @@
     "db:migrate:up:prod": "yarn typeorm:prod migration:run",
     "db:migrate:down": "yarn typeorm migration:revert",
     "db:migrate:down:prod": "yarn typeorm:prod migration:revert",
-    "migrate_and_start": "yarn db:create && yarn db:migrate:up && yarn start",
-    "migrate_and_start_prod": "node dist/create-db.js && yarn db:migrate:up:prod && yarn start:prod",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "lint-staged": {
     "*.ts": [
@@ -54,12 +54,12 @@
     "@golevelup/nestjs-rabbitmq": "^5.0.0",
     "@liaoliaots/nestjs-redis": "^10.0.0",
     "@nestjs/bull": "^11.0.4",
-    "@nestjs/common": "^11.0.0",
+    "@nestjs/common": "^11.2.9",
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "^11.0.0",
+    "@nestjs/core": "^11.2.9",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "^2.0.0",
-    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/platform-express": "^11.2.9",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "@slack/webhook": "^6.1.0",
@@ -67,10 +67,10 @@
     "axios": "^1.1.3",
     "bull": "^4.10.0",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.13.2",
+    "class-validator": "^0.14.4",
     "dotenv": "^16.0.3",
     "ioredis": "^5.10.1",
-    "multer": "^2.0.0",
+    "multer": "^2.5.0",
     "nest-commander": "3.10.0",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.2.2",
@@ -82,7 +82,7 @@
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.0.0",
+    "@nestjs/testing": "^11.2.9",
     "@swc/core": "^1.15.11",
     "@swc/jest": "^0.2.39",
     "@types/amqplib": "^0.10.0",
@@ -91,7 +91,7 @@
     "@types/jest": "^29.0.0",
     "@types/jest-when": "^3.5.2",
     "@types/multer": "^2.0.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.6.6",
     "@types/pg": "^8.6.5",
     "@types/supertest": "^2.0.12",
     "eslint": "^9.18.0",
@@ -120,7 +120,7 @@
     "bull": "^4.10.0"
   },
   "resolutions": {
-    "qs": "^6.14.1"
+    "qs": "^6.16.0"
   },
   "packageManager": "yarn@4.14.1"
 }
