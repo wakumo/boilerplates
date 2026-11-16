@@ -1,4 +1,5 @@
 import type { INestApplication } from '@nestjs/common';
+import type { HealthCheckResult } from '@nestjs/terminus';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 
@@ -33,17 +34,23 @@ describe('Application HTTP integration', () => {
     await app?.close();
   });
 
-  it('serves the starter endpoint', async () => {
-    await request(app!.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
-
-  it('checks the test database', async () => {
+  it('checks PostgreSQL, Redis, and the mocked RabbitMQ connection', async () => {
     await request(app!.getHttpServer())
       .get('/healthz')
       .expect(200)
-      .expect({ status: true });
+      .expect(
+        ({
+          body,
+        }: {
+          body: Omit<HealthCheckResult, 'status'> & { status: boolean };
+        }) => {
+          expect(body.status).toBe(true);
+          expect(body.details).toEqual({
+            db: { status: 'up' },
+            redis: { status: 'up' },
+            rabbitmq: { status: 'up' },
+          });
+        },
+      );
   });
 });

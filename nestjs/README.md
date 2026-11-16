@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node **26.13.0**, Corepack **0.36.0**, and Yarn **4.14.1**. Node 26 does not bundle Corepack.
+- Node **26.13.1**, Corepack **0.36.0**, and Yarn **4.14.1**. Node 26 does not bundle Corepack.
 - PostgreSQL, Redis, and RabbitMQ. CI uses PostgreSQL 13.14; choose a supported PostgreSQL release for a new deployment.
 
 ```sh
@@ -52,7 +52,9 @@ yarn exec eslint src test create-db.ts drop-db.ts pg-client.ts
 
 The starter contains a sample entity but no initial schema migration: generate/review one for your application before using entity-backed endpoints. Production never enables schema synchronization. Tests synchronize only their worker-specific databases.
 
-The HTTP app is RabbitMQ producer-only. Set `RABBITMQ_MODE=true` for job consumer mode. RabbitMQ startup remains non-blocking (`wait: false`); readiness currently checks PostgreSQL only. Both job modes retain DB/Redis infrastructure. Failed commands return a nonzero status.
+The HTTP app is RabbitMQ producer-only. Set `RABBITMQ_MODE=true` for job consumer mode. RabbitMQ startup remains non-blocking (`wait: false`). Both job modes retain DB/Redis infrastructure. Failed commands return a nonzero status.
+
+`GET /healthz` is a readiness check for PostgreSQL, Redis (`PING`), and the existing RabbitMQ connection. It preserves the boolean top-level `status`: HTTP 200 with `status: true` when healthy, or HTTP 503 with `status: false` when any check fails. Terminus `info`, `error`, and `details` provide per-dependency results (`"up"`/`"down"`). PostgreSQL and Redis checks have one-second timeouts. RabbitMQ reports connection state, not message delivery or consumer health, and can be down during initial connection/reconnection. Use a separate process-only endpoint if you need a liveness probe.
 
 Place runtime assets under `src/assets/`; Nest copies them to `dist/src/assets/`. TypeScript uses NodeNext ESM: keep `.js` suffixes on local imports. ESLint uses only `eslint.config.mjs`; generated migrations are excluded from formatting.
 
@@ -65,7 +67,7 @@ docker build --pull -t nestjs-starter .
 docker run --env-file .env -p 3000:3000 nestjs-starter
 ```
 
-Supply container-reachable service hosts and set `NODE_ENV=production` when deploying. Both image stages pin Node 26.13.0 and explicitly install Corepack 0.36.0; production installs runtime dependencies only. Startup runs compiled migrations and stops if they fail. `.dockerignore` excludes local secrets, dependencies and generated output.
+Supply container-reachable service hosts and set `NODE_ENV=production` when deploying. Both image stages pin Node 26.13.1 and explicitly install Corepack 0.36.0; production installs runtime dependencies only. Startup runs compiled migrations and stops if they fail. `.dockerignore` excludes local secrets, dependencies and generated output.
 
 CI installs immutable dependencies, builds, prepares worker databases, and runs `yarn test`. PR-Agent uses the shared proxy variables; `SHARED_AI_PROXY_MODEL_FALLBACKS` must contain the fallback list in the format expected by PR-Agent. Deployment registry, Kubernetes configuration and Jenkins credentials belong to the consuming project.
 

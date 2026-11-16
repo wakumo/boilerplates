@@ -1,4 +1,4 @@
-FROM node:26.13.0 AS build
+FROM node:26.13.1 AS build
 
 WORKDIR /usr/src/app
 
@@ -9,7 +9,7 @@ RUN yarn install --immutable
 COPY --chown=node:node . .
 RUN yarn build
 
-FROM node:26.13.0-alpine AS production
+FROM node:26.13.1-alpine AS production
 
 WORKDIR /usr/src/app
 

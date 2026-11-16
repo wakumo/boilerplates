@@ -16,6 +16,7 @@ jest.unstable_mockModule('@golevelup/nestjs-rabbitmq', () => {
       forRootAsync: jest.fn(() => MockModule),
     },
     AmqpConnection: jest.fn().mockImplementation(() => ({
+      connected: true,
       publish: jest.fn().mockImplementation(() => {
         console.log('Message published via RabbitMQ mocks');
       }),

@@ -20,7 +20,7 @@ const { EventMqConsumer } =
     }),
   ],
   providers: [EventMqProducer, AmqpConnection, EventMqConsumer],
-  exports: [EventMqProducer],
+  exports: [EventMqProducer, AmqpConnection],
 })
 export class EventMqMockModule {}
 
