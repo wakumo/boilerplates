@@ -15,6 +15,6 @@ import { EventMqProducer } from './services/eventmq-producer.service.js';
     }),
   ],
   providers: [EventMqProducer],
-  exports: [EventMqProducer],
+  exports: [EventMqProducer, RabbitMQModule],
 })
 export class EventMqProducerModule {}

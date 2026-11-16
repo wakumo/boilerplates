@@ -6,7 +6,6 @@ import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
 import { CacheManagerModule } from './commons/cache-manager/cache-manager.module.js';
 import { AppLoggerMiddleware } from './commons/middlewares/app-logger.middleware.js';
 import { UtilsModule } from './commons/utils/utils.module.js';
@@ -42,7 +41,7 @@ import { SampleModule } from './v1/sample/sample.module.js';
     SampleModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
